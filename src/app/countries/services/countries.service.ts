@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { combineLatest, Observable, of } from 'rxjs';
 import { CountrySmall } from '../interfaces/countrySmall';
 import { Country } from '../interfaces/country.interface';
 
@@ -31,11 +31,36 @@ export class CountriesService {
 
   getCountryByCode(code: string): Observable<Country[] | null> {
     if (!code) {
-      return of([]);
+      return of(null);
     }
 
     const params = new HttpParams().set('codes', code);
     const url: string = `${this.api_url}/alpha`;
     return this.http.get<Country[]>(url, { params });
+  }
+
+  // getCountryByCodeSmall(code: string): Observable<Country[]> {
+  //   if (!code) {
+  //     return of([]);
+  //   }
+
+  //   const params = new HttpParams()
+  //     .set('codes', code)
+  //     .set('fields', 'name,cca3');
+
+  //   const url: string = `${this.api_url}/alpha`;
+  //   return this.http.get<Country[]>(url, { params });
+  // }
+
+  getCountryByCodes(code: string): Observable<CountrySmall | null> {
+    if (!code) {
+      return of(null);
+    }
+
+    const params = new HttpParams()
+      .set('codes', code)
+      .set('fields', 'name,cca3');
+
+    return this.http.get<CountrySmall>(`${this.api_url}/alpha`, { params });
   }
 }
